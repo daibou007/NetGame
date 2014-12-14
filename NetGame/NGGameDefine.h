@@ -1,0 +1,44 @@
+//
+//  NGGameProperty.h
+//  NetGame
+//
+//  Created by 杨朋亮 on 10/12/14.
+//  Copyright (c) 2014年 daozhu. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+
+typedef NS_ENUM(NSInteger, GAME_RESTART_CHOICE) {
+    GAME_RESTART_CHOICE_NONE = 0,
+    GAME_RESTART_CHOICE_YES,
+    GAME_RESTART_CHOICE_NO
+};
+
+typedef NS_ENUM(NSInteger, GAME_STATE) {
+    GAME_STATE_START = 0,
+    GAME_STATE_CHOOSE_POLO,
+    GAME_STATE_MOVE_STEP,
+    GAME_STATE_OVER,
+    GAME_STATE_PREPEAR,
+    GAME_STATE_WAITING,
+    GAME_STATE_LOST_CONNECT
+
+};
+
+typedef NS_ENUM(NSInteger, GAME_DATA_TYPE) {
+    GAME_DATA_TYPE_CHOOSE_POLE = 0,
+    GAME_DATA_TYPE_MOVE_STEP,
+    GAME_DATA_TYPE_PREPEAR,
+    GAME_DATA_TYPE_WAITING,
+    GAME_DATA_TYPE_LOST_CONNECT,
+//    GAME_DATA_TYPE_NEXT,
+//    GAME_DATA_TYPE_MOVE_STEP_REV,
+    GAME_DATA_TYPE_GAME_OVER,
+    GAME_DATA_TYPE_RESTART
+};
+
+typedef NS_ENUM (NSInteger,POLE_TYPE){
+    POLE_TYPE_BLACK=0,
+    POLE_TYPE_WHITE
+};
