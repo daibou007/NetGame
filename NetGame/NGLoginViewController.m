@@ -30,10 +30,11 @@
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"连接成功！！！" maskType:SVProgressHUDMaskTypeBlack];
-             [self stopMatchmaking];
+            [self stopMatchmaking];
         });
+
     } else if (state == MCSessionStateNotConnected) {
         [self startMatchmaking];
     }

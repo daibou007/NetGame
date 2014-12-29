@@ -93,7 +93,7 @@
                 NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
                 [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [self.game begin];
                 });
             }else{
@@ -112,7 +112,7 @@
                 NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
                 [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [self.game begin];
                     [SVProgressHUD showProgress:-1 status:@"等待对方!"];
                 });
@@ -178,7 +178,7 @@
         NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
         [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
             [self.game begin];
         });
         
@@ -354,13 +354,13 @@
 }
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"连接成功！！！"  maskType:SVProgressHUDMaskTypeBlack];
             [self dismissViewControllerAnimated:YES completion:nil];
         });
 
     } else if (state == MCSessionStateNotConnected) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"失去连接!"  maskType:SVProgressHUDMaskTypeBlack];
             [self dismissViewControllerAnimated:YES completion:nil];
         });
@@ -388,7 +388,7 @@
             self.game.playerFirst = YES;
         }
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (self.game.playerFirst) {
                 self.blackChessMan.text=@"自己";
                 [self.piImgView setHidden:NO];
@@ -414,7 +414,7 @@
         [over fromNSData:data];
         NSString *myId =  [NGGameNetManager instance].session.myPeerID.displayName;
         if (![over.successId isEqual:myId]) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self game:self.game revFinish:!over.isSucess];
                 [SVProgressHUD dismiss];
             });
@@ -426,7 +426,7 @@
         switch (restart.choice) {
             case GAME_RESTART_CHOICE_NONE:
             {
-               dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                       dispatch_async(dispatch_get_main_queue(), ^(void) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"开始新游戏?"  delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil] ;
                     [alert showWithCompletion:^(UIAlertView *alertView, NSInteger buttonIndex){
                          NSLog(@"index:%d",buttonIndex);
@@ -447,7 +447,7 @@
                 break;
             case GAME_RESTART_CHOICE_YES:{
                 NSLog(@"GAME_RESTART_CHOICE_YES");
-                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                   dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [self.game reStart];
                     [SVProgressHUD showInfoWithStatus:@"请选择棋色"];
                       //TODO self.piImgView color
@@ -456,7 +456,7 @@
                 break;
                 case GAME_RESTART_CHOICE_NO:
             {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [SVProgressHUD showInfoWithStatus:@"拒绝了新游戏"];
                     NSLog(@"GAME_RESTART_CHOICE_NO");
                 });
