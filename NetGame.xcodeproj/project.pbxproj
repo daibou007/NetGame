@@ -30,8 +30,6 @@
 		48B5FB511A36F2F5000E9654 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 48B5FB4F1A36F2F5000E9654 /* InfoPlist.strings */; };
 		48B5FB531A36F2F5000E9654 /* NetGameTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B5FB521A36F2F5000E9654 /* NetGameTests.m */; };
 		48B5FB5E1A36F343000E9654 /* NGGameNetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B5FB5D1A36F343000E9654 /* NGGameNetManager.m */; };
-		48B5FB611A36F3A2000E9654 /* NGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B5FB601A36F3A2000E9654 /* NGLoginViewController.m */; };
-		48B5FB651A36F595000E9654 /* NGLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B5FB641A36F595000E9654 /* NGLoginViewController.xib */; };
 		48BC6D4C1A39C91200DCBEFD /* HBPlaySoundUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BC6D021A39C91200DCBEFD /* HBPlaySoundUtil.m */; };
 		48BC6D4D1A39C91200DCBEFD /* UIColor+setting.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BC6D041A39C91200DCBEFD /* UIColor+setting.m */; };
 		48BC6D4E1A39C91200DCBEFD /* XHBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BC6D061A39C91200DCBEFD /* XHBAppDelegate.m */; };
@@ -140,10 +138,7 @@
 		48B5FB521A36F2F5000E9654 /* NetGameTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetGameTests.m; sourceTree = "<group>"; };
 		48B5FB5C1A36F343000E9654 /* NGGameNetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGGameNetManager.h; sourceTree = "<group>"; };
 		48B5FB5D1A36F343000E9654 /* NGGameNetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NGGameNetManager.m; sourceTree = "<group>"; };
-		48B5FB5F1A36F3A2000E9654 /* NGLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGLoginViewController.h; sourceTree = "<group>"; };
-		48B5FB601A36F3A2000E9654 /* NGLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NGLoginViewController.m; sourceTree = "<group>"; };
 		48B5FB621A36F438000E9654 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
-		48B5FB641A36F595000E9654 /* NGLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NGLoginViewController.xib; sourceTree = "<group>"; };
 		48B87F571A3839A1009ADB61 /* NGGameDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGGameDefine.h; sourceTree = "<group>"; };
 		48BC6D011A39C91200DCBEFD /* HBPlaySoundUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBPlaySoundUtil.h; sourceTree = "<group>"; };
 		48BC6D021A39C91200DCBEFD /* HBPlaySoundUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBPlaySoundUtil.m; sourceTree = "<group>"; };
@@ -341,9 +336,6 @@
 				48BC6D1D1A39C91200DCBEFD /* XHBGomokuOverViewController.h */,
 				48BC6D1E1A39C91200DCBEFD /* XHBGomokuOverViewController.m */,
 				48BC6D891A39DCDE00DCBEFD /* XHBGomokuOverViewController.xib */,
-				48B5FB5F1A36F3A2000E9654 /* NGLoginViewController.h */,
-				48B5FB601A36F3A2000E9654 /* NGLoginViewController.m */,
-				48B5FB641A36F595000E9654 /* NGLoginViewController.xib */,
 				48B87F571A3839A1009ADB61 /* NGGameDefine.h */,
 				48B5FB3F1A36F2F4000E9654 /* Images.xcassets */,
 				48B5FB341A36F2F4000E9654 /* Supporting Files */,
@@ -565,7 +557,6 @@
 				48BC6D6A1A39C91200DCBEFD /* button_rank.png in Resources */,
 				48BC6D811A39C91200DCBEFD /* zoom_in.png in Resources */,
 				48BC6D6F1A39C91200DCBEFD /* pause.png in Resources */,
-				48B5FB651A36F595000E9654 /* NGLoginViewController.xib in Resources */,
 				48BC6D5E1A39C91200DCBEFD /* back_disabled.png in Resources */,
 				48BC6D611A39C91200DCBEFD /* bn_back@2x.png in Resources */,
 				48BC6D791A39C91200DCBEFD /* pipa.mp3 in Resources */,
@@ -627,7 +618,6 @@
 				4856975A1A3D95170080ADD0 /* GameData.m in Sources */,
 				48BC6D5B1A39C91200DCBEFD /* XHBGomokuPieceView.m in Sources */,
 				485697641A3D95170080ADD0 /* UIView+Toast.m in Sources */,
-				48B5FB611A36F3A2000E9654 /* NGLoginViewController.m in Sources */,
 				48B5FB3E1A36F2F4000E9654 /* NGAppDelegate.m in Sources */,
 				485697611A3D95170080ADD0 /* SVIndefiniteAnimatedView.m in Sources */,
 				4856975D1A3D95170080ADD0 /* NGGameOver.m in Sources */,

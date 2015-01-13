@@ -28,6 +28,8 @@
 @property(nonatomic)NSInteger undoCount;
 @property(nonatomic,strong)XHBGomokuPieceView * lastSelectPiece;
 
+@property (nonatomic) bool isConnected;
+
 @end
 
 @implementation XHBGomokuGameSencesViewController
@@ -71,57 +73,14 @@
     self.blackChessMan.text=@"未选择";
     [self.piImgView setHidden:YES];
     
-    if ([NGGameNetManager instance].isClient) {
-        [SVProgressHUD showProgress:-1 status:@"等待对方选择颜色"];
-    }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"选择颜色?"  delegate:nil cancelButtonTitle:@"黑" otherButtonTitles:@"白", nil] ;
-        [alert showWithCompletion:^(UIAlertView *alertView, NSInteger buttonIndex){
-            NSLog(@"index:%d",buttonIndex);
-            if (buttonIndex == 0) {
-                //黑
-                NGGameChoosePole *netDate = [[NGGameChoosePole alloc] init];
-                netDate.dataType = GAME_DATA_TYPE_CHOOSE_POLE;
-                netDate.poleState = POLE_TYPE_BLACK;
-                
-                [self sendGameNetData:netDate];
-                
-                self.game.playerFirst=YES;
-                self.blackChessMan.text=@"自己";
-                [self.piImgView setHidden:NO];
-                [self.piImgView setImage:[UIImage imageNamed:@"stone_black"]];
-                
-                NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
-                [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [self.game begin];
-                });
-            }else{
-                //白
-                NGGameChoosePole *netDate = [[NGGameChoosePole alloc] init];
-                netDate.dataType = GAME_DATA_TYPE_CHOOSE_POLE;
-                netDate.poleState = POLE_TYPE_WHITE;
-                
-                [self sendGameNetData:netDate];
-                
-                self.game.playerFirst = NO;
-                self.blackChessMan.text= @"自己";
-                [self.piImgView setHidden:NO];
-                [self.piImgView setImage:[UIImage imageNamed:@"stone_white"]];
-                
-                NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
-                [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [self.game begin];
-                    [SVProgressHUD showProgress:-1 status:@"等待对方!"];
-                });
-                
+    [NGGameNetManager instance].delegate = self;
+    
+    self.isConnected = NO;
 
-            }
-        }];
-    }
+}
 
+-(void)viewDidAppear:(BOOL)animated{
+    [self reloadTheSubViews];
 }
 
 - (void)didReceiveMemoryWarning
@@ -346,23 +305,39 @@
 
 #pragma mark  NGGameNetProtocol
 
--(void)stopMatchmaking{
-    
+- (void)startMatchmaking {
+    if ([NGGameNetManager instance].session.connectedPeers.count == 0) {
+        [[NGGameNetManager instance].assistant start];
+        
+        MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
+                                                                                        session:[NGGameNetManager instance].session];
+        browser.delegate = [NGGameNetManager instance];
+        [self presentViewController:browser animated:YES completion:nil];
+    }
 }
--(void)startMatchmaking{
-    
+
+
+- (void)stopMatchmaking {
+    [[NGGameNetManager instance].assistant stop];
+    [self dismissViewControllerAnimated:YES completion:^{
+        XHBGomokuGameSencesViewController *viewCtrl = [[XHBGomokuGameSencesViewController alloc] initWithNibName:@"XHBGomoGameSencesViewController" bundle:nil];
+        [NGGameNetManager instance].delegate = viewCtrl;
+        
+        [self presentViewController:viewCtrl animated:YES completion:nil];
+    }];
 }
+
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"连接成功！！！"  maskType:SVProgressHUDMaskTypeBlack];
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self stopMatchmaking];
         });
 
     } else if (state == MCSessionStateNotConnected) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"失去连接!"  maskType:SVProgressHUDMaskTypeBlack];
-            [self dismissViewControllerAnimated:YES completion:nil];
+             [self startMatchmaking];
         });
 
     }
@@ -502,6 +477,63 @@
         }];
         [self presentViewController:controller animated:NO completion:nil];
     });
+}
+
+-(void) reloadTheSubViews{
+    if (self.isConnected) {
+        if ([NGGameNetManager instance].isClient) {
+            [SVProgressHUD showProgress:-1 status:@"等待对方选择颜色"];
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"选择颜色?"  delegate:nil cancelButtonTitle:@"黑" otherButtonTitles:@"白", nil] ;
+            [alert showWithCompletion:^(UIAlertView *alertView, NSInteger buttonIndex){
+                NSLog(@"index:%d",buttonIndex);
+                if (buttonIndex == 0) {
+                    //黑
+                    NGGameChoosePole *netDate = [[NGGameChoosePole alloc] init];
+                    netDate.dataType = GAME_DATA_TYPE_CHOOSE_POLE;
+                    netDate.poleState = POLE_TYPE_BLACK;
+                    
+                    [self sendGameNetData:netDate];
+                    
+                    self.game.playerFirst=YES;
+                    self.blackChessMan.text=@"自己";
+                    [self.piImgView setHidden:NO];
+                    [self.piImgView setImage:[UIImage imageNamed:@"stone_black"]];
+                    
+                    NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
+                    [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        [self.game begin];
+                    });
+                }else{
+                    //白
+                    NGGameChoosePole *netDate = [[NGGameChoosePole alloc] init];
+                    netDate.dataType = GAME_DATA_TYPE_CHOOSE_POLE;
+                    netDate.poleState = POLE_TYPE_WHITE;
+                    
+                    [self sendGameNetData:netDate];
+                    
+                    self.game.playerFirst = NO;
+                    self.blackChessMan.text= @"自己";
+                    [self.piImgView setHidden:NO];
+                    [self.piImgView setImage:[UIImage imageNamed:@"stone_white"]];
+                    
+                    NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
+                    [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        [self.game begin];
+                        [SVProgressHUD showProgress:-1 status:@"等待对方!"];
+                    });
+                    
+                    
+                }
+            }];
+        }
+    }else{
+       [self startMatchmaking];
+    }
 }
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "NGAppDelegate.h"
-#import "NGLoginViewController.h"
 #import "XHBGomokuGameSencesViewController.h"
 
 @implementation NGAppDelegate
@@ -21,9 +20,8 @@
    
     [[NGGameNetManager instance] loadNet];
    
-//    XHBGomokuGameSencesViewController *view = [[XHBGomokuGameSencesViewController alloc] initWithNibName:@"XHBGomoGameSencesViewController" bundle:nil];
+    XHBGomokuGameSencesViewController *view = [[XHBGomokuGameSencesViewController alloc] initWithNibName:@"XHBGomoGameSencesViewController" bundle:nil];
     
-    NGLoginViewController *view = [[NGLoginViewController alloc] init];
     [self.window setRootViewController:view];
     
     return YES;
