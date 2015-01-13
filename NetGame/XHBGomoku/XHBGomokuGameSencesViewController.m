@@ -15,20 +15,21 @@
 #import "UIView+Toast.h"
 
 @interface XHBGomokuGameSencesViewController ()
-@property(nonatomic,weak)IBOutlet UIView * boardView;
-@property(nonatomic,strong)XHBGomokuGameEngine * game;
-@property(nonatomic,weak)IBOutlet UIButton * btnSound;
-@property(nonatomic,weak)IBOutlet UIButton * btnUndo;
-@property(nonatomic,weak)IBOutlet UIButton * btnRestart;
-@property(nonatomic,weak)IBOutlet UILabel * blackChessMan;
-@property(nonatomic,weak)IBOutlet UIImageView * piImgView;
-@property(nonatomic,weak)IBOutlet UIView * topView;
-@property(nonatomic)BOOL soundOpen;
-@property(nonatomic,strong)NSMutableArray * pieces;
-@property(nonatomic)NSInteger undoCount;
-@property(nonatomic,strong)XHBGomokuPieceView * lastSelectPiece;
 
-@property (nonatomic) bool isConnected;
+@property (nonatomic,weak  ) IBOutlet UIView              * boardView;
+@property (nonatomic,strong) XHBGomokuGameEngine * game;
+@property (nonatomic,weak  ) IBOutlet UIButton            * btnSound;
+@property (nonatomic,weak  ) IBOutlet UIButton            * btnUndo;
+@property (nonatomic,weak  ) IBOutlet UIButton            * btnRestart;
+@property (nonatomic,weak  ) IBOutlet UILabel             * blackChessMan;
+@property (nonatomic,weak  ) IBOutlet UIImageView         * piImgView;
+@property (nonatomic,weak  ) IBOutlet UIView              * topView;
+@property (nonatomic       ) BOOL                soundOpen;
+@property (nonatomic,strong) NSMutableArray      * pieces;
+@property (nonatomic       ) NSInteger           undoCount;
+@property (nonatomic,strong) XHBGomokuPieceView  * lastSelectPiece;
+
+@property (nonatomic       ) bool                isConnected;
 
 @end
 
@@ -76,7 +77,7 @@
     [NGGameNetManager instance].delegate = self;
     
     self.isConnected = NO;
-
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -137,7 +138,7 @@
         NSNumber * number=[NSNumber numberWithBool:self.game.playerFirst];
         [[NSUserDefaults standardUserDefaults] setObject:number forKey:@"playerFirst"];
         
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             [self.game begin];
         });
         
@@ -156,9 +157,12 @@
 }
 -(IBAction)btnRestartAction:(id)sender
 {
-   //send restart gamedata
+    //send restart gamedata
     NGGameReStart *restart = [[NGGameReStart alloc] init];
     restart.choice = GAME_RESTART_CHOICE_NONE;
+    
+    [self reloadTheSubViews];
+    
     [self sendGameNetData:restart];
     [SVProgressHUD showProgress:-1 status:@"等待对方选择!"];
     
@@ -167,7 +171,7 @@
 -(IBAction)btnUndoAction:(id)sender
 {
     if ([self.game undo]) {
-//        self.undoCount++;
+        //        self.undoCount++;
         if (self.undoCount>=3) {
             self.btnUndo.enabled=NO;
             [self.btnUndo setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -212,11 +216,11 @@
             }
         }
         XHBGomokuOverViewController * controller=[[XHBGomokuOverViewController alloc] initWithNibName:@"XHBGomokuOverViewController" bundle:nil];
-                                                  
+        
         controller.success=success;
         controller.backImage=[self  screenshot:[UIApplication sharedApplication].keyWindow];
         [controller setCallback:^{
-//            [self.game reStart];
+            //            [self.game reStart];
         }];
         [self presentViewController:controller animated:NO completion:nil];
     });
@@ -320,26 +324,26 @@
 - (void)stopMatchmaking {
     [[NGGameNetManager instance].assistant stop];
     [self dismissViewControllerAnimated:YES completion:^{
-        XHBGomokuGameSencesViewController *viewCtrl = [[XHBGomokuGameSencesViewController alloc] initWithNibName:@"XHBGomoGameSencesViewController" bundle:nil];
-        [NGGameNetManager instance].delegate = viewCtrl;
         
-        [self presentViewController:viewCtrl animated:YES completion:nil];
     }];
 }
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"连接成功！！！"  maskType:SVProgressHUDMaskTypeBlack];
             [self stopMatchmaking];
+            self.isConnected = YES;
+            [self reloadTheSubViews];
         });
-
+        
     } else if (state == MCSessionStateNotConnected) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             [SVProgressHUD showInfoWithStatus:@"失去连接!"  maskType:SVProgressHUDMaskTypeBlack];
-             [self startMatchmaking];
+            self.isConnected = NO;
+            [self reloadTheSubViews];
         });
-
+        
     }
 }
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
@@ -363,7 +367,7 @@
             self.game.playerFirst = YES;
         }
         
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (self.game.playerFirst) {
                 self.blackChessMan.text=@"自己";
                 [self.piImgView setHidden:NO];
@@ -383,13 +387,13 @@
         NGGameStep *step = [[NGGameStep alloc] init];
         [step fromNSData:data];
         [self.game computerPrepareChess:step];
-
+        
     }else if(gdata.dataType == GAME_DATA_TYPE_GAME_OVER){
         NGGameOver *over = [[NGGameOver alloc] init];
         [over fromNSData:data];
         NSString *myId =  [NGGameNetManager instance].session.myPeerID.displayName;
         if (![over.successId isEqual:myId]) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self game:self.game revFinish:!over.isSucess];
                 [SVProgressHUD dismiss];
             });
@@ -401,10 +405,10 @@
         switch (restart.choice) {
             case GAME_RESTART_CHOICE_NONE:
             {
-                       dispatch_async(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"开始新游戏?"  delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil] ;
                     [alert showWithCompletion:^(UIAlertView *alertView, NSInteger buttonIndex){
-                         NSLog(@"index:%d",buttonIndex);
+                        NSLog(@"index:%d",buttonIndex);
                         if (buttonIndex == 0) {
                             //NO
                             NGGameReStart *restart = [[NGGameReStart alloc] init];
@@ -417,19 +421,21 @@
                             [self.game reStart];
                         }
                     }];
-               });
+                });
             }
                 break;
             case GAME_RESTART_CHOICE_YES:{
                 NSLog(@"GAME_RESTART_CHOICE_YES");
-                   dispatch_async(dispatch_get_main_queue(), ^(void) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [self.game reStart];
+                    [self reloadTheSubViews];
                     [SVProgressHUD showInfoWithStatus:@"请选择棋色"];
-                      //TODO self.piImgView color
-                  });
+                    
+                    //TODO self.piImgView color
+                });
             }
                 break;
-                case GAME_RESTART_CHOICE_NO:
+            case GAME_RESTART_CHOICE_NO:
             {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [SVProgressHUD showInfoWithStatus:@"拒绝了新游戏"];
@@ -532,7 +538,7 @@
             }];
         }
     }else{
-       [self startMatchmaking];
+        [self startMatchmaking];
     }
 }
 
